@@ -1,18 +1,25 @@
-import Task from "../Task/Task"
-import Footer from "../Footer"
+import React from 'react'
+
+import Task from '../Task/Task'
 import './TaskList.css'
 
-const TaskList = (props) => {
-	const {todoData} = props
-
-	return (
-		<section className="main">
-			<ul className="todo-list">
-				<Task todos={todoData}/>
-			</ul>
-			<Footer />
-	 </section>
-	)
+function TaskList({ todoData, toggleTaskStatus, onDelete }) {
+  return (
+    <section className="main">
+      <ul className="todo-list">
+        {todoData.map(({ id, label, active }) => (
+          <Task
+            key={id}
+            id={id}
+            label={label}
+            active={active}
+            toggleTaskStatus={toggleTaskStatus}
+            onDelete={onDelete}
+          />
+        ))}
+      </ul>
+    </section>
+  )
 }
 
 export default TaskList

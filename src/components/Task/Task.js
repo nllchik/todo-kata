@@ -1,26 +1,26 @@
+import React from 'react'
+
+import ViewTask from '../ViewTask'
 import './Task.css'
 
-const Task = (props) => {
-   const {todos} = props
+function Task({ id, label, active, toggleTaskStatus, onDelete }) {
+  let classNames = 'active'
+  if (!active) {
+    classNames = 'completed'
+  }
 
-   return (
-      todos.map((item) => {
-         return (
-            <li className="completed">
-               <div className="view">
-                  <input className="toggle" type="checkbox" />
-                  <label>
-                      <span className="description">{ item.label }</span>
-                      <span className="created"></span>
-                  </label>
-                  <button type="button" className="icon icon-edit" />
-                  <button className="icon icon-destroy" />
-               </div>
-            </li>
-         )
-      })
-   )
+  const handleTaskClick = () => {
+    toggleTaskStatus(id)
+  }
+
+  const handleDeleteClick = () => {
+    onDelete(id)
+  }
+  return (
+    <li className={classNames}>
+      <ViewTask label={label} handleTaskClick={handleTaskClick} handleDeleteClick={handleDeleteClick} />
+    </li>
+  )
 }
 
 export default Task
-
