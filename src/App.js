@@ -60,6 +60,7 @@ export default class App extends Component {
       label,
       id: this.maxId++,
       active: true,
+      filter: 'all',
     }
   }
 
