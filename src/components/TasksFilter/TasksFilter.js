@@ -1,43 +1,36 @@
-// import React, { Component } from 'react'
-
 import './TasksFilter.css'
 
-function TasksFilter() {
+function TasksFilter({ setFilter, filterStatus }) {
+  const filterClick = (filter) => {
+    setFilter(filter)
+  }
   return (
     <ul className="filters">
       <li>
-        <button type="button" className="selected">
+        <button type="button" className={filterStatus === 'all' ? 'selected' : ''} onClick={() => filterClick('all')}>
           All
         </button>
       </li>
       <li>
-        <button type="button">Active</button>
+        <button
+          type="button"
+          className={filterStatus === 'active' ? 'selected' : ''}
+          onClick={() => filterClick('active')}
+        >
+          Active
+        </button>
       </li>
       <li>
-        <button type="button">Completed</button>
+        <button
+          type="button"
+          className={filterStatus === 'completed' ? 'selected' : ''}
+          onClick={() => filterClick('completed')}
+        >
+          Completed
+        </button>
       </li>
     </ul>
   )
 }
 
 export default TasksFilter
-
-// export default class TasksFilter extends Component {
-//   render() {
-//     return (
-//       <ul className="filters">
-//         <li>
-//           <button type="button" className="selected">
-//             All
-//           </button>
-//         </li>
-//         <li>
-//           <button type="button">Active</button>
-//         </li>
-//         <li>
-//           <button type="button">Completed</button>
-//         </li>
-//       </ul>
-//     )
-//   }
-// }

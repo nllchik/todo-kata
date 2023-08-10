@@ -1,4 +1,3 @@
-/* eslint-disable react/prefer-stateless-function */
 /* eslint-disable jsx-a11y/no-autofocus */
 import React, { Component } from 'react'
 import './NewTaskForm.css'
@@ -11,7 +10,6 @@ export default class NewTaskForm extends Component {
     }
   }
 
-  // eslint-disable-next-line class-methods-use-this
   onLabelChange = (event) => {
     this.setState({
       inputValue: event.target.value,
@@ -21,12 +19,13 @@ export default class NewTaskForm extends Component {
   onSubmit = (event) => {
     event.preventDefault()
     const { inputValue } = this.state
-    // eslint-disable-next-line react/destructuring-assignment
-    this.props.addItem(inputValue)
+    const { addItem } = this.props
+    addItem(inputValue)
     this.setState({ inputValue: '' })
   }
 
   render() {
+    const { inputValue } = this.state
     return (
       <header className="header">
         <h1>todos</h1>
@@ -35,8 +34,7 @@ export default class NewTaskForm extends Component {
             className="new-todo"
             placeholder="What needs to be done?"
             autoFocus
-            // eslint-disable-next-line react/destructuring-assignment
-            value={this.state.inputValue}
+            value={inputValue}
             onChange={this.onLabelChange}
           />
         </form>

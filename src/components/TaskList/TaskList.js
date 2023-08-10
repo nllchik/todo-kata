@@ -3,11 +3,17 @@ import React from 'react'
 import Task from '../Task/Task'
 import './TaskList.css'
 
-function TaskList({ todoData, toggleTaskStatus, onDelete }) {
+function TaskList({ todoData, toggleTaskStatus, onDelete, filter }) {
+  let filteredData = [...todoData]
+  if (filter === 'active') {
+    filteredData = filteredData.filter((task) => task.active)
+  } else if (filter === 'completed') {
+    filteredData = filteredData.filter((task) => !task.active)
+  }
   return (
     <section className="main">
       <ul className="todo-list">
-        {todoData.map(({ id, label, active }) => (
+        {filteredData.map(({ id, label, active }) => (
           <Task
             key={id}
             id={id}

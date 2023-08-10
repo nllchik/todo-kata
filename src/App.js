@@ -14,11 +14,18 @@ export default class App extends Component {
 
     this.state = {
       todoData: [
-        this.createTodoItem('Completed task created'),
+        this.createTodoItem('Completed task created', false),
         this.createTodoItem('Editing task created'),
         this.createTodoItem('Active task'),
       ],
+      filter: 'all',
     }
+  }
+
+  setFilter = (filter) => {
+    this.setState({
+      filter,
+    })
   }
 
   toggleTaskStatus = (id) => {
@@ -55,22 +62,34 @@ export default class App extends Component {
     return activeTasks.length
   }
 
-  createTodoItem(label) {
+  clearCompleted = () => {
+    this.setState(({ todoData }) => ({
+      todoData: todoData.filter((task) => task.active),
+    }))
+  }
+
+  createTodoItem(label, active = true) {
     return {
       label,
       id: this.maxId++,
-      active: true,
+      active,
     }
   }
 
   render() {
-    const { todoData } = this.state
-    const { toggleTaskStatus, deleteItem, addItem, remainingTasks } = this
+    const { todoData, filter } = this.state
+    const { toggleTaskStatus, deleteItem, addItem, remainingTasks, setFilter, clearCompleted } = this
     return (
       <section className="todoapp">
         <NewTaskForm addItem={addItem} />
-        <TaskList todoData={todoData} toggleTaskStatus={toggleTaskStatus} onDelete={deleteItem} />
-        <Footer todoData={todoData} remainingTasks={remainingTasks} />
+        <TaskList todoData={todoData} toggleTaskStatus={toggleTaskStatus} onDelete={deleteItem} filter={filter} />
+        <Footer
+          todoData={todoData}
+          remainingTasks={remainingTasks}
+          setFilter={setFilter}
+          filter={filter}
+          clearCompleted={clearCompleted}
+        />
       </section>
     )
   }
