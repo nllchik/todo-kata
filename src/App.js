@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { formatDistanceToNow } from 'date-fns'
 
 import NewTaskForm from './components/NewTaskForm'
 import TaskList from './components/TaskList'
@@ -14,9 +15,9 @@ export default class App extends Component {
 
     this.state = {
       todoData: [
-        this.createTodoItem('Completed task created', false),
-        this.createTodoItem('Editing task created'),
-        this.createTodoItem('Active task'),
+        this.createTodoItem('Completed task created', new Date(2023, 1, 15), false),
+        this.createTodoItem('Editing task created', new Date(2023, 3, 15)),
+        this.createTodoItem('Active task', new Date(2023, 7, 15)),
       ],
       filter: 'all',
     }
@@ -41,6 +42,19 @@ export default class App extends Component {
     })
   }
 
+  toggleEditing = (id, bool) => {
+    const { todoData } = this.state
+    const idx = todoData.findIndex((el) => el.id === id)
+
+    const newItem = { ...todoData[idx] }
+    newItem.isEditing = bool
+
+    const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
+    this.setState({
+      todoData: copyTodoData,
+    })
+  }
+
   deleteItem = (id) => {
     const { todoData } = this.state
     const copyTodoData = todoData.filter((el) => el.id !== id)
@@ -49,8 +63,8 @@ export default class App extends Component {
     })
   }
 
-  addItem = (inputValue) => {
-    const newItem = this.createTodoItem(inputValue)
+  addItem = (inputValue, date) => {
+    const newItem = this.createTodoItem(inputValue, date)
     this.setState(({ todoData }) => ({
       todoData: [...todoData, newItem],
     }))
@@ -68,21 +82,54 @@ export default class App extends Component {
     }))
   }
 
-  createTodoItem(label, active = true) {
+  changeLabelTask = (id, newLabel) => {
+    const { todoData } = this.state
+
+    const idx = todoData.findIndex((el) => el.id === id)
+
+    let newItem = { ...todoData[idx] }
+
+    newItem = { ...newItem, label: newLabel, isEditing: false }
+
+    const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
+    this.setState({
+      todoData: copyTodoData,
+    })
+  }
+
+  createTodoItem(label, date, active = true, isEditing = false) {
     return {
       label,
       id: this.maxId++,
       active,
+      created: formatDistanceToNow(date, { addSuffix: true }),
+      isEditing,
     }
   }
 
   render() {
     const { todoData, filter } = this.state
-    const { toggleTaskStatus, deleteItem, addItem, remainingTasks, setFilter, clearCompleted } = this
+    const {
+      toggleTaskStatus,
+      toggleEditing,
+      deleteItem,
+      addItem,
+      remainingTasks,
+      setFilter,
+      clearCompleted,
+      changeLabelTask,
+    } = this
     return (
       <section className="todoapp">
         <NewTaskForm addItem={addItem} />
-        <TaskList todoData={todoData} toggleTaskStatus={toggleTaskStatus} onDelete={deleteItem} filter={filter} />
+        <TaskList
+          todoData={todoData}
+          toggleTaskStatus={toggleTaskStatus}
+          onDelete={deleteItem}
+          filter={filter}
+          toggleEditing={toggleEditing}
+          changeLabelTask={changeLabelTask}
+        />
         <Footer
           todoData={todoData}
           remainingTasks={remainingTasks}

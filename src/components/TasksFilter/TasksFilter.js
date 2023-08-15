@@ -1,4 +1,5 @@
 import './TasksFilter.css'
+import PropTypes from 'prop-types'
 
 function TasksFilter({ setFilter, filterStatus }) {
   const filterClick = (filter) => {
@@ -31,6 +32,16 @@ function TasksFilter({ setFilter, filterStatus }) {
       </li>
     </ul>
   )
+}
+
+TasksFilter.defaultProps = {
+  setFilter: () => {},
+  filterStatus: 'all',
+}
+
+TasksFilter.propTypes = {
+  setFilter: PropTypes.func,
+  filterStatus: PropTypes.string,
 }
 
 export default TasksFilter

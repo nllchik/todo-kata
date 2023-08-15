@@ -20,7 +20,7 @@ export default class NewTaskForm extends Component {
     event.preventDefault()
     const { inputValue } = this.state
     const { addItem } = this.props
-    addItem(inputValue)
+    addItem(inputValue, Date.now())
     this.setState({ inputValue: '' })
   }
 
