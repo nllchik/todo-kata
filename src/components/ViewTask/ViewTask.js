@@ -19,6 +19,7 @@ function ViewTask({ label, handleTaskClick, toggleEditing, handleDeleteClick, ac
 
 ViewTask.defaultProps = {
   label: 'Неизвестная задача',
+  id: null,
   handleTaskClick: () => {},
   handleDeleteClick: () => {},
   active: true,
@@ -27,6 +28,7 @@ ViewTask.defaultProps = {
 
 ViewTask.propTypes = {
   label: PropTypes.string,
+  id: PropTypes.number,
   active: PropTypes.bool,
   handleTaskClick: PropTypes.func,
   handleDeleteClick: PropTypes.func,

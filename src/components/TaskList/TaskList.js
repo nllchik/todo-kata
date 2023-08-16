@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import Task from '../Task/Task'
 import './TaskList.css'
 
-function TaskList({ todoData, toggleTaskStatus, toggleEditing, onDelete, filter, changeLabelTask }) {
+function TaskList({ todoData, toggleTaskStatus, toggleEditing, onDelete, filter, changeLabelTask, cancelEditingTask }) {
   let filteredData = [...todoData]
   if (filter === 'active') {
     filteredData = filteredData.filter((task) => task.active)
@@ -26,6 +26,7 @@ function TaskList({ todoData, toggleTaskStatus, toggleEditing, onDelete, filter,
             created={created}
             isEditing={isEditing}
             changeLabelTask={changeLabelTask}
+            cancelEditingTask={cancelEditingTask}
           />
         ))}
       </ul>
@@ -38,6 +39,8 @@ TaskList.defaultProps = {
   toggleTaskStatus: () => {},
   onDelete: () => {},
   filter: 'all',
+  changeLabelTask: () => {},
+  cancelEditingTask: () => {},
 }
 
 TaskList.propTypes = {
@@ -52,6 +55,8 @@ TaskList.propTypes = {
   toggleTaskStatus: PropTypes.func,
   onDelete: PropTypes.func,
   filter: PropTypes.string,
+  changeLabelTask: PropTypes.func,
+  cancelEditingTask: PropTypes.func,
 }
 
 export default TaskList

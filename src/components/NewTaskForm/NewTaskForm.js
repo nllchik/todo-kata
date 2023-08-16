@@ -1,8 +1,18 @@
 /* eslint-disable jsx-a11y/no-autofocus */
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+
 import './NewTaskForm.css'
 
 export default class NewTaskForm extends Component {
+  static propTypes = {
+    addItem: PropTypes.func,
+  }
+
+  static defaultProps = {
+    addItem: () => {},
+  }
+
   constructor(props) {
     super(props)
     this.state = {

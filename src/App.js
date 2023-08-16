@@ -15,8 +15,8 @@ export default class App extends Component {
 
     this.state = {
       todoData: [
-        this.createTodoItem('Completed task created', new Date(2023, 1, 15), false),
-        this.createTodoItem('Editing task created', new Date(2023, 3, 15)),
+        this.createTodoItem('Completed task', new Date(2023, 1, 15), false),
+        this.createTodoItem('Editing task', new Date(2023, 3, 15), true, true),
         this.createTodoItem('Active task', new Date(2023, 7, 15)),
       ],
       filter: 'all',
@@ -30,28 +30,16 @@ export default class App extends Component {
   }
 
   toggleTaskStatus = (id) => {
-    const { todoData } = this.state
-    const idx = todoData.findIndex((el) => el.id === id)
-
-    const newItem = { ...todoData[idx] }
-    newItem.active = !newItem.active
-
-    const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
-    this.setState({
-      todoData: copyTodoData,
+    this.updateTodoData(id, (newItem) => {
+      const updatedItem = { ...newItem, active: !newItem.active }
+      return updatedItem
     })
   }
 
   toggleEditing = (id, bool) => {
-    const { todoData } = this.state
-    const idx = todoData.findIndex((el) => el.id === id)
-
-    const newItem = { ...todoData[idx] }
-    newItem.isEditing = bool
-
-    const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
-    this.setState({
-      todoData: copyTodoData,
+    this.updateTodoData(id, (newItem) => {
+      const updatedItem = { ...newItem, isEditing: bool }
+      return updatedItem
     })
   }
 
@@ -64,6 +52,9 @@ export default class App extends Component {
   }
 
   addItem = (inputValue, date) => {
+    if (inputValue.trim() === '') {
+      return
+    }
     const newItem = this.createTodoItem(inputValue, date)
     this.setState(({ todoData }) => ({
       todoData: [...todoData, newItem],
@@ -83,15 +74,41 @@ export default class App extends Component {
   }
 
   changeLabelTask = (id, newLabel) => {
+    this.updateTodoData(id, (newItem) => {
+      let updatedItem
+      if (newLabel.trim() === '') {
+        updatedItem = { ...newItem, isEditing: false }
+      } else {
+        updatedItem = { ...newItem, label: newLabel, isEditing: false }
+      }
+      return updatedItem
+    })
+  }
+
+  cancelEditingTask = (e, id) => {
     const { todoData } = this.state
 
     const idx = todoData.findIndex((el) => el.id === id)
 
     let newItem = { ...todoData[idx] }
 
-    newItem = { ...newItem, label: newLabel, isEditing: false }
+    if (e.key === 'Escape') {
+      newItem = { ...newItem, isEditing: false }
+      const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
+      this.setState({
+        todoData: copyTodoData,
+      })
+    }
+  }
 
-    const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
+  updateTodoData(id, updateFunc) {
+    const { todoData } = this.state
+
+    const idx = todoData.findIndex((el) => el.id === id)
+
+    const currentItem = todoData[idx]
+    const updatedItem = updateFunc(currentItem)
+    const copyTodoData = [...todoData.slice(0, idx), updatedItem, ...todoData.slice(idx + 1)]
     this.setState({
       todoData: copyTodoData,
     })
@@ -118,6 +135,7 @@ export default class App extends Component {
       setFilter,
       clearCompleted,
       changeLabelTask,
+      cancelEditingTask,
     } = this
     return (
       <section className="todoapp">
@@ -129,6 +147,7 @@ export default class App extends Component {
           filter={filter}
           toggleEditing={toggleEditing}
           changeLabelTask={changeLabelTask}
+          cancelEditingTask={cancelEditingTask}
         />
         <Footer
           todoData={todoData}

@@ -5,7 +5,18 @@ import ViewTask from '../ViewTask'
 import './Task.css'
 import EditTask from '../EditTask/EditTask'
 
-function Task({ id, label, active, toggleTaskStatus, toggleEditing, onDelete, created, isEditing, changeLabelTask }) {
+function Task({
+  id,
+  label,
+  active,
+  toggleTaskStatus,
+  toggleEditing,
+  onDelete,
+  created,
+  isEditing,
+  changeLabelTask,
+  cancelEditingTask,
+}) {
   let classNames = 'active'
   if (!active) {
     classNames = 'completed'
@@ -19,8 +30,12 @@ function Task({ id, label, active, toggleTaskStatus, toggleEditing, onDelete, cr
     onDelete(id)
   }
 
+  const cancelEditing = (e) => {
+    cancelEditingTask(e, id)
+  }
+
   const element = isEditing ? (
-    <EditTask label={label} id={id} changeLabelTask={changeLabelTask} />
+    <EditTask label={label} id={id} changeLabelTask={changeLabelTask} cancelEditing={cancelEditing} />
   ) : (
     <li className={classNames}>
       <ViewTask
@@ -45,6 +60,9 @@ Task.defaultProps = {
   toggleTaskStatus: () => {},
   onDelete: () => {},
   created: 'Неизвестно',
+  isEditing: false,
+  changeLabelTask: () => {},
+  cancelEditingTask: () => {},
 }
 
 Task.propTypes = {
@@ -54,6 +72,9 @@ Task.propTypes = {
   toggleTaskStatus: PropTypes.func,
   onDelete: PropTypes.func,
   created: PropTypes.string,
+  isEditing: PropTypes.bool,
+  changeLabelTask: PropTypes.func,
+  cancelEditingTask: PropTypes.func,
 }
 
 export default Task

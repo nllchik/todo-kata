@@ -4,14 +4,14 @@
 	list-style: none;
 	right: 0;
 	left: 0;
-}
-
-.filters li {
+ }
+ 
+ .filters li {
 	display: inline;
 	cursor: default;
-}
-
-.filters li button {
+ }
+ 
+ .filters li button {
 	display: inline-block;
 	color: inherit;
 	margin: 3px;
@@ -19,22 +19,22 @@
 	text-decoration: none;
 	border: 1px solid transparent;
 	border-radius: 3px;
-}
-
-.filters li button:not(.selected) {
+ }
+ 
+ .filters li button:not(.selected) {
 	cursor: pointer;
-}
-
-.filters li:hover button {
+ }
+ 
+ .filters li:hover button {
 	border-color: rgba(175, 47, 47, 0.1);
-}
-
-.filters li button.selected {
+ }
+ 
+ .filters li button.selected {
 	border-color: rgba(175, 47, 47, 0.2);
-}
-
-@media (max-width: 430px) {
+ }
+ 
+ @media (max-width: 430px) {
 	.filters {
-		bottom: 10px;
+	  bottom: 10px;
 	}
-}
+ }
