@@ -16,7 +16,7 @@ export default class App extends Component {
     this.state = {
       todoData: [
         this.createTodoItem('Completed task', new Date(2023, 1, 15), false),
-        this.createTodoItem('Editing task', new Date(2023, 3, 15), true, true),
+        this.createTodoItem('Editing task', new Date(2023, 3, 15)),
         this.createTodoItem('Active task', new Date(2023, 7, 15)),
       ],
       filter: 'all',

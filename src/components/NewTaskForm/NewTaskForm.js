@@ -34,8 +34,16 @@ export default class NewTaskForm extends Component {
     this.setState({ inputValue: '' })
   }
 
+  cancelTaskAddition = (event) => {
+    if (event.key === 'Escape') {
+      this.setState({ inputValue: '' })
+      event.target.blur()
+    }
+  }
+
   render() {
     const { inputValue } = this.state
+    const { cancelTaskAddition } = this
     return (
       <header className="header">
         <h1>todos</h1>
@@ -46,6 +54,7 @@ export default class NewTaskForm extends Component {
             autoFocus
             value={inputValue}
             onChange={this.onLabelChange}
+            onKeyDown={cancelTaskAddition}
           />
         </form>
       </header>
