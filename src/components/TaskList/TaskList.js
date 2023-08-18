@@ -50,7 +50,7 @@ TaskList.propTypes = {
       id: PropTypes.number,
       label: PropTypes.string,
       active: PropTypes.bool,
-      created: PropTypes.string,
+      created: PropTypes.instanceOf(Date),
     })
   ),
   toggleTaskStatus: PropTypes.func,

@@ -136,7 +136,7 @@ export default class App extends Component {
       label,
       id: this.maxId++,
       active,
-      created: date,
+      created: new Date(),
       isEditing,
     }
   }
