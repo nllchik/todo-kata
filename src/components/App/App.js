@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
-import { formatDistanceToNow } from 'date-fns'
 
-import NewTaskForm from './components/NewTaskForm'
-import TaskList from './components/TaskList'
-import Footer from './components/Footer'
+import NewTaskForm from '../NewTaskForm'
+import TaskList from '../TaskList'
+import Footer from '../Footer'
 
 import './App.css'
 
@@ -20,13 +19,25 @@ export default class App extends Component {
         this.createTodoItem('Active task', new Date(2023, 7, 15)),
       ],
       filter: 'all',
+      date: new Date(),
     }
   }
 
+  componentDidMount() {
+    this.timerID = setInterval(() => {
+      this.minute()
+    }, 60000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerID)
+  }
+
   setFilter = (filter) => {
-    this.setState({
+    this.setState((prevState) => ({
+      ...prevState,
       filter,
-    })
+    }))
   }
 
   toggleTaskStatus = (id) => {
@@ -44,10 +55,11 @@ export default class App extends Component {
   }
 
   deleteItem = (id) => {
-    const { todoData } = this.state
-    const copyTodoData = todoData.filter((el) => el.id !== id)
-    this.setState({
-      todoData: copyTodoData,
+    this.setState(({ todoData }) => {
+      const copyTodoData = todoData.filter((el) => el.id !== id)
+      return {
+        todoData: copyTodoData,
+      }
     })
   }
 
@@ -86,19 +98,24 @@ export default class App extends Component {
   }
 
   cancelEditingTask = (e, id) => {
-    const { todoData } = this.state
+    this.setState(({ todoData }) => {
+      const idx = todoData.findIndex((el) => el.id === id)
+      let newItem = { ...todoData[idx] }
 
-    const idx = todoData.findIndex((el) => el.id === id)
+      if (e.key === 'Escape') {
+        newItem = { ...newItem, isEditing: false }
+        const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
+        this.setState({
+          todoData: copyTodoData,
+        })
+      }
+    })
+  }
 
-    let newItem = { ...todoData[idx] }
-
-    if (e.key === 'Escape') {
-      newItem = { ...newItem, isEditing: false }
-      const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
-      this.setState({
-        todoData: copyTodoData,
-      })
-    }
+  minute() {
+    this.setState({
+      date: new Date(),
+    })
   }
 
   updateTodoData(id, updateFunc) {
@@ -119,7 +136,7 @@ export default class App extends Component {
       label,
       id: this.maxId++,
       active,
-      created: formatDistanceToNow(date, { addSuffix: true }),
+      created: date,
       isEditing,
     }
   }

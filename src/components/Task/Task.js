@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import classNames from 'classnames'
 
 import ViewTask from '../ViewTask'
 import './Task.css'
@@ -17,10 +18,7 @@ function Task({
   changeLabelTask,
   cancelEditingTask,
 }) {
-  let classNames = 'active'
-  if (!active) {
-    classNames = 'completed'
-  }
+  const taskClassNames = classNames({ active, completed: !active })
 
   const handleTaskClick = () => {
     toggleTaskStatus(id)
@@ -37,7 +35,7 @@ function Task({
   const element = isEditing ? (
     <EditTask label={label} id={id} changeLabelTask={changeLabelTask} cancelEditing={cancelEditing} />
   ) : (
-    <li className={classNames}>
+    <li className={taskClassNames}>
       <ViewTask
         label={label}
         handleTaskClick={handleTaskClick}

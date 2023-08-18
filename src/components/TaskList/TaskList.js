@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { formatDistanceToNow } from 'date-fns'
 
 import Task from '../Task/Task'
 import './TaskList.css'
@@ -23,7 +24,7 @@ function TaskList({ todoData, toggleTaskStatus, toggleEditing, onDelete, filter,
             toggleTaskStatus={toggleTaskStatus}
             toggleEditing={toggleEditing}
             onDelete={onDelete}
-            created={created}
+            created={formatDistanceToNow(created, { addSuffix: true })}
             isEditing={isEditing}
             changeLabelTask={changeLabelTask}
             cancelEditingTask={cancelEditingTask}
