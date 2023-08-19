@@ -119,15 +119,14 @@ export default class App extends Component {
   }
 
   updateTodoData(id, updateFunc) {
-    const { todoData } = this.state
+    this.setState((prevState) => {
+      const { todoData } = prevState
+      const idx = todoData.findIndex((el) => el.id === id)
+      const currentItem = todoData[idx]
+      const updatedItem = updateFunc(currentItem)
+      const copyTodoData = [...todoData.slice(0, idx), updatedItem, ...todoData.slice(idx + 1)]
 
-    const idx = todoData.findIndex((el) => el.id === id)
-
-    const currentItem = todoData[idx]
-    const updatedItem = updateFunc(currentItem)
-    const copyTodoData = [...todoData.slice(0, idx), updatedItem, ...todoData.slice(idx + 1)]
-    this.setState({
-      todoData: copyTodoData,
+      return { todoData: copyTodoData }
     })
   }
 
