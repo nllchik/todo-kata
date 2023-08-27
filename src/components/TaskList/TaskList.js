@@ -5,7 +5,17 @@ import { formatDistanceToNow } from 'date-fns'
 import Task from '../Task/Task'
 import './TaskList.css'
 
-function TaskList({ todoData, toggleTaskStatus, toggleEditing, onDelete, filter, changeLabelTask, cancelEditingTask }) {
+function TaskList({
+  todoData,
+  toggleTaskStatus,
+  toggleEditing,
+  onDelete,
+  filter,
+  changeLabelTask,
+  cancelEditingTask,
+  startTimer,
+  pauseTimer,
+}) {
   let filteredData = [...todoData]
   if (filter === 'active') {
     filteredData = filteredData.filter((task) => task.active)
@@ -15,7 +25,7 @@ function TaskList({ todoData, toggleTaskStatus, toggleEditing, onDelete, filter,
   return (
     <section className="main">
       <ul className="todo-list">
-        {filteredData.map(({ id, label, active, created, isEditing }) => (
+        {filteredData.map(({ id, label, active, created, isEditing, elapsedSeconds, elapsedMinutes }) => (
           <Task
             key={id}
             id={id}
@@ -28,6 +38,10 @@ function TaskList({ todoData, toggleTaskStatus, toggleEditing, onDelete, filter,
             isEditing={isEditing}
             changeLabelTask={changeLabelTask}
             cancelEditingTask={cancelEditingTask}
+            startTimer={startTimer}
+            pauseTimer={pauseTimer}
+            elapsedSeconds={elapsedSeconds}
+            elapsedMinutes={elapsedMinutes}
           />
         ))}
       </ul>

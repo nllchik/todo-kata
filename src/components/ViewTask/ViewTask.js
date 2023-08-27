@@ -3,13 +3,30 @@ import PropTypes from 'prop-types'
 
 import './ViewTask.css'
 
-function ViewTask({ label, handleTaskClick, toggleEditing, handleDeleteClick, active, created, id }) {
+function ViewTask({
+  label,
+  handleTaskClick,
+  toggleEditing,
+  handleDeleteClick,
+  active,
+  created,
+  id,
+  startTimer,
+  pauseTimer,
+  elapsedSeconds,
+  elapsedMinutes,
+}) {
   return (
     <div className="view">
       <input className="toggle" type="checkbox" checked={!active} onChange={handleTaskClick} />
       <label>
-        <span className="description">{label}</span>
-        <span className="created">{created}</span>
+        <span className="title">{label}</span>
+        <span className="description">
+          <button type="button" className="icon icon-play" aria-label="Play" onClick={startTimer} />
+          <button type="button" className="icon icon-pause" aria-label="Pause" onClick={pauseTimer} />
+          {elapsedMinutes !== null ? `${elapsedMinutes}:${elapsedSeconds}` : elapsedSeconds}
+        </span>
+        <span className="description">{created}</span>
       </label>
       <button type="button" className="icon icon-edit" aria-label="Edit" onClick={() => toggleEditing(id, true)} />
       <button type="button" className="icon icon-destroy" aria-label="Delete" onClick={handleDeleteClick} />

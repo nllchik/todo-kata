@@ -17,7 +17,21 @@ export default class NewTaskForm extends Component {
     super(props)
     this.state = {
       inputValue: '',
+      minutes: '',
+      seconds: '',
     }
+  }
+
+  minutesInput = (event) => {
+    this.setState({
+      minutes: event.target.value,
+    })
+  }
+
+  secondsInput = (event) => {
+    this.setState({
+      seconds: event.target.value,
+    })
   }
 
   onLabelChange = (event) => {
@@ -28,10 +42,10 @@ export default class NewTaskForm extends Component {
 
   onSubmit = (event) => {
     event.preventDefault()
-    const { inputValue } = this.state
+    const { inputValue, minutes, seconds } = this.state
     const { addItem } = this.props
-    addItem(inputValue, new Date())
-    this.setState({ inputValue: '' })
+    addItem(inputValue, new Date(), minutes, seconds)
+    this.setState({ inputValue: '', minutes: '', seconds: '' })
   }
 
   cancelTaskAddition = (event) => {
@@ -42,12 +56,12 @@ export default class NewTaskForm extends Component {
   }
 
   render() {
-    const { inputValue } = this.state
+    const { inputValue, minutes, seconds } = this.state
     const { cancelTaskAddition } = this
     return (
       <header className="header">
         <h1>todos</h1>
-        <form onSubmit={this.onSubmit}>
+        <form className="new-todo-form" onSubmit={this.onSubmit}>
           <input
             className="new-todo"
             placeholder="What needs to be done?"
@@ -56,6 +70,21 @@ export default class NewTaskForm extends Component {
             onChange={this.onLabelChange}
             onKeyDown={cancelTaskAddition}
           />
+          <input
+            className="new-todo-form__timer"
+            type="number"
+            value={minutes}
+            onChange={this.minutesInput}
+            placeholder="Min"
+          />
+          <input
+            className="new-todo-form__timer"
+            type="number"
+            value={seconds}
+            onChange={this.secondsInput}
+            placeholder="Sec"
+          />
+          <button type="submit" style={{ display: 'none' }} aria-label="Submit form" />
         </form>
       </header>
     )
