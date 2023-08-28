@@ -50,7 +50,7 @@ export default class NewTaskForm extends Component {
 
   cancelTaskAddition = (event) => {
     if (event.key === 'Escape') {
-      this.setState({ inputValue: '' })
+      this.setState({ inputValue: '', seconds: '', minutes: '' })
       event.target.blur()
     }
   }
@@ -76,6 +76,8 @@ export default class NewTaskForm extends Component {
             value={minutes}
             onChange={this.minutesInput}
             placeholder="Min"
+            onKeyDown={cancelTaskAddition}
+            min={0}
           />
           <input
             className="new-todo-form__timer"
@@ -83,6 +85,9 @@ export default class NewTaskForm extends Component {
             value={seconds}
             onChange={this.secondsInput}
             placeholder="Sec"
+            onKeyDown={cancelTaskAddition}
+            max={59}
+            min={0}
           />
           <button type="submit" style={{ display: 'none' }} aria-label="Submit form" />
         </form>

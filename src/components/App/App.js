@@ -181,8 +181,8 @@ export default class App extends Component {
       created: date,
       isEditing,
       started: false,
-      elapsedMinutes: minutes || null,
-      elapsedSeconds: seconds || 0,
+      elapsedMinutes: parseInt(minutes, 10) || 0,
+      elapsedSeconds: parseInt(seconds, 10) || 0,
     }
   }
 

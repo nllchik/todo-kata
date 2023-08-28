@@ -24,7 +24,7 @@ function ViewTask({
         <span className="description">
           <button type="button" className="icon icon-play" aria-label="Play" onClick={startTimer} />
           <button type="button" className="icon icon-pause" aria-label="Pause" onClick={pauseTimer} />
-          {elapsedMinutes !== null ? `${elapsedMinutes}:${elapsedSeconds}` : elapsedSeconds}
+          {elapsedMinutes}:{elapsedSeconds < 10 ? `0${elapsedSeconds}` : elapsedSeconds}
         </span>
         <span className="description">{created}</span>
       </label>
