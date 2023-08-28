@@ -27,15 +27,10 @@ export default class App extends Component {
     this.minuteTimerID = setInterval(() => {
       this.minute()
     }, 60000)
-
-    this.timerID = setInterval(() => {
-      this.timer()
-    }, 1000)
   }
 
   componentWillUnmount() {
     clearInterval(this.minuteTimerID)
-    clearInterval(this.timerID)
   }
 
   setFilter = (filter) => {
@@ -72,7 +67,7 @@ export default class App extends Component {
     if (inputValue.trim() === '') {
       return
     }
-    const newItem = this.createTodoItem(inputValue, date, minutes, seconds)
+    const newItem = this.createTodoItem(inputValue, date, true, false, minutes, seconds)
     this.setState(({ todoData }) => ({
       todoData: [...todoData, newItem],
     }))
@@ -103,55 +98,17 @@ export default class App extends Component {
   }
 
   cancelEditingTask = (e, id) => {
-    this.setState(({ todoData }) => {
-      const idx = todoData.findIndex((el) => el.id === id)
-      let newItem = { ...todoData[idx] }
-
-      if (e.key === 'Escape') {
-        newItem = { ...newItem, isEditing: false }
-        const copyTodoData = [...todoData.slice(0, idx), newItem, ...todoData.slice(idx + 1)]
-        this.setState({
-          todoData: copyTodoData,
-        })
-      }
-    })
-  }
-
-  startTimer = (id) => {
-    this.updateTodoData(id, (newItem) => {
-      const updatedItem = { ...newItem, started: true }
-      return updatedItem
-    })
-  }
-
-  pauseTimer = (id) => {
-    this.updateTodoData(id, (newItem) => {
-      const updatedItem = { ...newItem, started: false }
-      return updatedItem
-    })
-  }
-
-  timer = () => {
-    this.setState(({ todoData }) => {
-      const updatedTodoData = todoData.map((task) => {
-        if (task.started) {
-          let newElapsedSeconds = task.elapsedSeconds + 1
-          let newElapsedMinutes = task.elapsedMinutes
-
-          if (newElapsedSeconds === 60) {
-            newElapsedMinutes += 1
-            newElapsedSeconds = 0
-          }
-
-          return {
-            ...task,
-            elapsedMinutes: newElapsedMinutes,
-            elapsedSeconds: newElapsedSeconds,
-          }
-        }
-        return task
+    if (e.key === 'Escape') {
+      this.updateTodoData(id, (newItem) => {
+        const updatedItem = { ...newItem, isEditing: false }
+        return updatedItem
       })
-      return { todoData: updatedTodoData }
+    }
+  }
+
+  updateTimer = (id, minutes, seconds) => {
+    this.updateTodoData(id, (task) => {
+      return { ...task, elapsedSeconds: seconds, elapsedMinutes: minutes }
     })
   }
 
@@ -173,7 +130,7 @@ export default class App extends Component {
     })
   }
 
-  createTodoItem(label, date, minutes, seconds, active = true, isEditing = false) {
+  createTodoItem(label, date, active = true, isEditing = false, minutes = 0, seconds = 0) {
     return {
       label,
       id: this.maxId++,
@@ -181,8 +138,8 @@ export default class App extends Component {
       created: date,
       isEditing,
       started: false,
-      elapsedMinutes: parseInt(minutes, 10) || 0,
-      elapsedSeconds: parseInt(seconds, 10) || 0,
+      elapsedMinutes: minutes,
+      elapsedSeconds: seconds,
     }
   }
 
@@ -198,8 +155,7 @@ export default class App extends Component {
       clearCompleted,
       changeLabelTask,
       cancelEditingTask,
-      startTimer,
-      pauseTimer,
+      updateTimer,
     } = this
     return (
       <section className="todoapp">
@@ -212,8 +168,7 @@ export default class App extends Component {
           toggleEditing={toggleEditing}
           changeLabelTask={changeLabelTask}
           cancelEditingTask={cancelEditingTask}
-          startTimer={startTimer}
-          pauseTimer={pauseTimer}
+          updateTimer={updateTimer}
         />
         <Footer
           todoData={todoData}

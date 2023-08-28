@@ -13,8 +13,7 @@ function TaskList({
   filter,
   changeLabelTask,
   cancelEditingTask,
-  startTimer,
-  pauseTimer,
+  updateTimer,
 }) {
   let filteredData = [...todoData]
   if (filter === 'active') {
@@ -38,10 +37,9 @@ function TaskList({
             isEditing={isEditing}
             changeLabelTask={changeLabelTask}
             cancelEditingTask={cancelEditingTask}
-            startTimer={startTimer}
-            pauseTimer={pauseTimer}
             elapsedSeconds={elapsedSeconds}
             elapsedMinutes={elapsedMinutes}
+            updateTimer={updateTimer}
           />
         ))}
       </ul>

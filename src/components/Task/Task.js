@@ -17,10 +17,9 @@ function Task({
   isEditing,
   changeLabelTask,
   cancelEditingTask,
-  startTimer,
-  pauseTimer,
   elapsedSeconds,
   elapsedMinutes,
+  updateTimer,
 }) {
   const taskClassNames = classNames({ active, completed: !active })
 
@@ -48,10 +47,9 @@ function Task({
         created={created}
         toggleEditing={toggleEditing}
         id={id}
-        startTimer={() => startTimer(id)}
-        pauseTimer={() => pauseTimer(id)}
         elapsedSeconds={elapsedSeconds}
         elapsedMinutes={elapsedMinutes}
+        updateTimer={updateTimer}
       />
     </li>
   )
