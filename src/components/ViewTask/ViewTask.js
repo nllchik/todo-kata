@@ -23,8 +23,8 @@ function ViewTask({
         <span className="title">{label}</span>
         {active ? (
           <Timer
-            minute={parseInt(elapsedMinutes, 10)}
-            second={parseInt(elapsedSeconds, 10)}
+            elapsedMinutes={parseInt(elapsedMinutes, 10)}
+            elapsedSeconds={parseInt(elapsedSeconds, 10)}
             id={id}
             updateTimer={updateTimer}
           />

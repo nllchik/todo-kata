@@ -1,81 +1,59 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import './TaskTimer.css'
 
-export default class TaskTimer extends Component {
-  constructor(props) {
-    super(props)
+function TaskTimer({ elapsedMinutes, elapsedSeconds, id, updateTimer }) {
+  const [second, setSecond] = useState(elapsedSeconds)
+  const [minute, setMinute] = useState(elapsedMinutes)
+  const [timerIsActive, setTimerIsActive] = useState(false)
 
-    const { second, minute } = this.props
-
-    this.state = {
-      second,
-      minute,
-      timerIsActive: false,
-      timerId: null,
-    }
+  const updateTime = () => {
+    setSecond((prevSecond) => {
+      const newSecondValue = prevSecond + 1
+      if (newSecondValue >= 60) {
+        setMinute((prevMinute) => {
+          const newMinuteValue = prevMinute + 1
+          return newMinuteValue
+        })
+        return 0
+      }
+      return newSecondValue
+    })
   }
 
-  componentWillUnmount() {
-    const { timerId } = this.state
-    clearInterval(timerId)
-  }
-
-  updateTime = () => {
-    const { second, minute } = this.state
-    const { updateTimer, id } = this.props
-
-    if (second === 59) {
-      this.setState((state) => {
-        const newMinuteValue = state.minute === 59 ? 0 : state.minute + 1
-        updateTimer(id, newMinuteValue, 0)
-        return {
-          minute: newMinuteValue,
-          second: 0,
-        }
-      })
-    } else {
-      this.setState((state) => {
-        const newSecondValue = state.second + 1
-        updateTimer(id, minute, newSecondValue)
-        return {
-          second: newSecondValue,
-        }
-      })
-    }
-  }
-
-  startPauseTimer = () => {
-    const { timerIsActive, timerId } = this.state
-    if (!timerIsActive) {
-      this.setState({
-        timerIsActive: true,
-        timerId: setInterval(this.updateTime, 1000),
-      })
+  useEffect(() => {
+    let timerId
+    if (timerIsActive) {
+      timerId = setInterval(updateTime, 1000)
     } else {
       clearInterval(timerId)
-      this.setState({
-        timerIsActive: false,
-        timerId: null,
-      })
     }
+    return () => {
+      clearInterval(timerId)
+    }
+  }, [timerIsActive])
+
+  useEffect(() => {
+    updateTimer(id, minute, second)
+  }, [minute, second])
+
+  const startPauseTimer = () => {
+    setTimerIsActive(!timerIsActive)
   }
 
-  render() {
-    const { second, minute, timerIsActive } = this.state
-    const { startPauseTimer } = this
-    return (
-      <span>
-        <button
-          type="button"
-          className={timerIsActive ? 'icon icon-pause' : 'icon icon-play'}
-          aria-label="Play"
-          onClick={startPauseTimer}
-        />
-        <span className="time">
-          {minute}:{second < 10 ? `0${second}` : second}
-        </span>
+  return (
+    <span>
+      <button
+        type="button"
+        className={timerIsActive ? 'icon icon-pause' : 'icon icon-play'}
+        aria-label="Play"
+        onClick={startPauseTimer}
+      />
+      <span className="time">
+        {minute}:{second < 10 ? `0${second}` : second}
       </span>
-    )
-  }
+    </span>
+  )
 }
+
+export default TaskTimer

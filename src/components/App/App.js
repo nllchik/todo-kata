@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import NewTaskForm from '../NewTaskForm'
 import TaskList from '../TaskList'
@@ -6,87 +6,96 @@ import Footer from '../Footer'
 
 import './App.css'
 
-export default class App extends Component {
-  maxId = 100
+let maxId = 100
 
-  constructor(props) {
-    super(props)
+const createTodoItem = (label, date, active = true, isEditing = false, minutes = 0, seconds = 0) => {
+  return {
+    label,
+    id: maxId++,
+    active,
+    created: date,
+    isEditing,
+    started: false,
+    elapsedMinutes: minutes || 0,
+    elapsedSeconds: seconds || 0,
+  }
+}
 
-    this.state = {
-      todoData: [
-        this.createTodoItem('Completed task', new Date(2023, 1, 15), false),
-        this.createTodoItem('Editing task', new Date(2023, 3, 15)),
-        this.createTodoItem('Active task', new Date(2023, 7, 15)),
-      ],
-      filter: 'all',
-      date: new Date(),
-    }
+function App() {
+  const [todoData, setTodoData] = useState([
+    createTodoItem('Completed task', new Date(2023, 1, 15), false),
+    createTodoItem('Editing task', new Date(2023, 3, 15)),
+    createTodoItem('Active task', new Date(2023, 7, 15)),
+  ])
+
+  const [filter, setFilter] = useState('all')
+  const [currentDate, setDate] = useState(new Date())
+
+  const minute = () => {
+    setDate(new Date())
   }
 
-  componentDidMount() {
-    this.minuteTimerID = setInterval(() => {
-      this.minute()
+  useEffect(() => {
+    const minuteTimerID = setInterval(() => {
+      minute()
     }, 60000)
+
+    return () => {
+      clearInterval(minuteTimerID)
+    }
+  }, [])
+
+  const updateFilter = (newFilter) => {
+    setFilter(newFilter)
   }
 
-  componentWillUnmount() {
-    clearInterval(this.minuteTimerID)
+  const updateTodoData = (id, updateFunc) => {
+    const idx = todoData.findIndex((el) => el.id === id)
+    const currentItem = todoData[idx]
+    const updatedItem = updateFunc(currentItem)
+    const copyTodoData = [...todoData.slice(0, idx), updatedItem, ...todoData.slice(idx + 1)]
+    setTodoData(copyTodoData)
   }
 
-  setFilter = (filter) => {
-    this.setState((prevState) => ({
-      ...prevState,
-      filter,
-    }))
-  }
-
-  toggleTaskStatus = (id) => {
-    this.updateTodoData(id, (newItem) => {
+  const toggleTaskStatus = (id) => {
+    updateTodoData(id, (newItem) => {
       const updatedItem = { ...newItem, active: !newItem.active }
       return updatedItem
     })
   }
 
-  toggleEditing = (id, bool) => {
-    this.updateTodoData(id, (newItem) => {
+  const toggleEditing = (id, bool) => {
+    updateTodoData(id, (newItem) => {
       const updatedItem = { ...newItem, isEditing: bool }
       return updatedItem
     })
   }
 
-  deleteItem = (id) => {
-    this.setState(({ todoData }) => {
-      const copyTodoData = todoData.filter((el) => el.id !== id)
-      return {
-        todoData: copyTodoData,
-      }
-    })
+  const deleteItem = (id) => {
+    const copyTodoData = todoData.filter((el) => el.id !== id)
+    setTodoData(copyTodoData)
   }
 
-  addItem = (inputValue, date, minutes, seconds) => {
+  const addItem = (inputValue, taskDate, minutes, seconds) => {
     if (inputValue.trim() === '') {
       return
     }
-    const newItem = this.createTodoItem(inputValue, date, true, false, minutes, seconds)
-    this.setState(({ todoData }) => ({
-      todoData: [...todoData, newItem],
-    }))
+    const newItem = createTodoItem(inputValue, taskDate, true, false, minutes, seconds)
+    setTodoData([...todoData, newItem])
   }
 
-  remainingTasks = () => {
-    const { todoData } = this.state
+  const remainingTasks = () => {
     const activeTasks = todoData.filter((task) => task.active)
     return activeTasks.length
   }
 
-  clearCompleted = () => {
-    this.setState(({ todoData }) => ({
-      todoData: todoData.filter((task) => task.active),
-    }))
+  const clearCompleted = () => {
+    const newTodoData = todoData.filter((task) => task.active)
+    setTodoData(newTodoData)
   }
 
-  changeLabelTask = (id, newLabel) => {
-    this.updateTodoData(id, (newItem) => {
+  const changeLabelTask = (id, newLabel) => {
+    updateTodoData(id, (newItem) => {
       let updatedItem
       if (newLabel.trim() === '') {
         updatedItem = { ...newItem, isEditing: false }
@@ -97,87 +106,44 @@ export default class App extends Component {
     })
   }
 
-  cancelEditingTask = (e, id) => {
+  const cancelEditingTask = (e, id) => {
     if (e.key === 'Escape') {
-      this.updateTodoData(id, (newItem) => {
+      updateTodoData(id, (newItem) => {
         const updatedItem = { ...newItem, isEditing: false }
         return updatedItem
       })
     }
   }
 
-  updateTimer = (id, minutes, seconds) => {
-    this.updateTodoData(id, (task) => {
+  const updateTimer = (id, minutes, seconds) => {
+    updateTodoData(id, (task) => {
       return { ...task, elapsedSeconds: seconds, elapsedMinutes: minutes }
     })
   }
 
-  minute() {
-    this.setState({
-      date: new Date(),
-    })
-  }
-
-  updateTodoData(id, updateFunc) {
-    this.setState((prevState) => {
-      const { todoData } = prevState
-      const idx = todoData.findIndex((el) => el.id === id)
-      const currentItem = todoData[idx]
-      const updatedItem = updateFunc(currentItem)
-      const copyTodoData = [...todoData.slice(0, idx), updatedItem, ...todoData.slice(idx + 1)]
-
-      return { todoData: copyTodoData }
-    })
-  }
-
-  createTodoItem(label, date, active = true, isEditing = false, minutes = 0, seconds = 0) {
-    return {
-      label,
-      id: this.maxId++,
-      active,
-      created: date,
-      isEditing,
-      started: false,
-      elapsedMinutes: minutes,
-      elapsedSeconds: seconds,
-    }
-  }
-
-  render() {
-    const { todoData, filter } = this.state
-    const {
-      toggleTaskStatus,
-      toggleEditing,
-      deleteItem,
-      addItem,
-      remainingTasks,
-      setFilter,
-      clearCompleted,
-      changeLabelTask,
-      cancelEditingTask,
-      updateTimer,
-    } = this
-    return (
-      <section className="todoapp">
-        <NewTaskForm addItem={addItem} />
-        <TaskList
-          todoData={todoData}
-          toggleTaskStatus={toggleTaskStatus}
-          onDelete={deleteItem}
-          filter={filter}
-          toggleEditing={toggleEditing}
-          changeLabelTask={changeLabelTask}
-          cancelEditingTask={cancelEditingTask}
-          updateTimer={updateTimer}
-        />
-        <Footer
-          todoData={todoData}
-          remainingTasks={remainingTasks}
-          setFilter={setFilter}
-          filter={filter}
-          clearCompleted={clearCompleted}
-        />
-      </section>
-    )
-  }
+  return (
+    <section className="todoapp">
+      <NewTaskForm addItem={addItem} />
+      <TaskList
+        todoData={todoData}
+        toggleTaskStatus={toggleTaskStatus}
+        onDelete={deleteItem}
+        filter={filter}
+        toggleEditing={toggleEditing}
+        changeLabelTask={changeLabelTask}
+        cancelEditingTask={cancelEditingTask}
+        updateTimer={updateTimer}
+      />
+      <Footer
+        currentDate={currentDate}
+        todoData={todoData}
+        remainingTasks={remainingTasks}
+        setFilter={updateFilter}
+        filter={filter}
+        clearCompleted={clearCompleted}
+      />
+    </section>
+  )
 }
+
+export default App

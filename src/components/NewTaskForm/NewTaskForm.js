@@ -1,97 +1,86 @@
 /* eslint-disable jsx-a11y/no-autofocus */
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 
 import './NewTaskForm.css'
 
-export default class NewTaskForm extends Component {
-  static propTypes = {
-    addItem: PropTypes.func,
+function NewTaskForm({ addItem }) {
+  const [inputValue, setInputValue] = useState('')
+  const [minutes, setMinutes] = useState('')
+  const [seconds, setSeconds] = useState('')
+
+  const minutesInput = (event) => {
+    setMinutes(event.target.value)
   }
 
-  static defaultProps = {
-    addItem: () => {},
+  const secondsInput = (event) => {
+    setSeconds(event.target.value)
   }
 
-  constructor(props) {
-    super(props)
-    this.state = {
-      inputValue: '',
-      minutes: '',
-      seconds: '',
-    }
+  const onLabelChange = (event) => {
+    setInputValue(event.target.value)
   }
 
-  minutesInput = (event) => {
-    this.setState({
-      minutes: event.target.value,
-    })
-  }
-
-  secondsInput = (event) => {
-    this.setState({
-      seconds: event.target.value,
-    })
-  }
-
-  onLabelChange = (event) => {
-    this.setState({
-      inputValue: event.target.value,
-    })
-  }
-
-  onSubmit = (event) => {
+  const onSubmit = (event) => {
     event.preventDefault()
-    const { inputValue, minutes, seconds } = this.state
-    const { addItem } = this.props
     addItem(inputValue, new Date(), minutes, seconds)
-    this.setState({ inputValue: '', minutes: '', seconds: '' })
+    setMinutes('')
+    setSeconds('')
+    setInputValue('')
   }
 
-  cancelTaskAddition = (event) => {
+  const cancelTaskAddition = (event) => {
     if (event.key === 'Escape') {
-      this.setState({ inputValue: '', seconds: '', minutes: '' })
+      setMinutes('')
+      setSeconds('')
+      setInputValue('')
       event.target.blur()
     }
   }
 
-  render() {
-    const { inputValue, minutes, seconds } = this.state
-    const { cancelTaskAddition } = this
-    return (
-      <header className="header">
-        <h1>todos</h1>
-        <form className="new-todo-form" onSubmit={this.onSubmit}>
-          <input
-            className="new-todo"
-            placeholder="What needs to be done?"
-            autoFocus
-            value={inputValue}
-            onChange={this.onLabelChange}
-            onKeyDown={cancelTaskAddition}
-          />
-          <input
-            className="new-todo-form__timer"
-            type="number"
-            value={minutes}
-            onChange={this.minutesInput}
-            placeholder="Min"
-            onKeyDown={cancelTaskAddition}
-            min={0}
-          />
-          <input
-            className="new-todo-form__timer"
-            type="number"
-            value={seconds}
-            onChange={this.secondsInput}
-            placeholder="Sec"
-            onKeyDown={cancelTaskAddition}
-            max={59}
-            min={0}
-          />
-          <button type="submit" style={{ display: 'none' }} aria-label="Submit form" />
-        </form>
-      </header>
-    )
-  }
+  return (
+    <header className="header">
+      <h1>todos</h1>
+      <form className="new-todo-form" onSubmit={onSubmit}>
+        <input
+          className="new-todo"
+          placeholder="What needs to be done?"
+          autoFocus
+          value={inputValue}
+          onChange={onLabelChange}
+          onKeyDown={cancelTaskAddition}
+        />
+        <input
+          className="new-todo-form__timer"
+          type="number"
+          value={minutes}
+          onChange={minutesInput}
+          placeholder="Min"
+          onKeyDown={cancelTaskAddition}
+          min={0}
+        />
+        <input
+          className="new-todo-form__timer"
+          type="number"
+          value={seconds}
+          onChange={secondsInput}
+          placeholder="Sec"
+          onKeyDown={cancelTaskAddition}
+          max={59}
+          min={0}
+        />
+        <button type="submit" style={{ display: 'none' }} aria-label="Submit form" />
+      </form>
+    </header>
+  )
 }
+
+NewTaskForm.propTypes = {
+  addItem: PropTypes.func,
+}
+
+NewTaskForm.defaultProps = {
+  addItem: () => {},
+}
+
+export default NewTaskForm
