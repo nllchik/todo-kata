@@ -50,11 +50,12 @@ function App() {
   }
 
   const updateTodoData = (id, updateFunc) => {
-    const idx = todoData.findIndex((el) => el.id === id)
-    const currentItem = todoData[idx]
-    const updatedItem = updateFunc(currentItem)
-    const copyTodoData = [...todoData.slice(0, idx), updatedItem, ...todoData.slice(idx + 1)]
-    setTodoData(copyTodoData)
+    setTodoData((prevTodoData) => {
+      const idx = prevTodoData.findIndex((el) => el.id === id)
+      const currentItem = prevTodoData[idx]
+      const updatedItem = updateFunc(currentItem)
+      return [...prevTodoData.slice(0, idx), updatedItem, ...prevTodoData.slice(idx + 1)]
+    })
   }
 
   const toggleTaskStatus = (id) => {
@@ -72,8 +73,7 @@ function App() {
   }
 
   const deleteItem = (id) => {
-    const copyTodoData = todoData.filter((el) => el.id !== id)
-    setTodoData(copyTodoData)
+    setTodoData((prevTodoData) => prevTodoData.filter((el) => el.id !== id))
   }
 
   const addItem = (inputValue, taskDate, minutes, seconds) => {
@@ -81,7 +81,7 @@ function App() {
       return
     }
     const newItem = createTodoItem(inputValue, taskDate, true, false, minutes, seconds)
-    setTodoData([...todoData, newItem])
+    setTodoData((prevTodoData) => [...prevTodoData, newItem])
   }
 
   const remainingTasks = () => {
@@ -90,8 +90,7 @@ function App() {
   }
 
   const clearCompleted = () => {
-    const newTodoData = todoData.filter((task) => task.active)
-    setTodoData(newTodoData)
+    setTodoData((prevTodoData) => prevTodoData.filter((task) => task.active))
   }
 
   const changeLabelTask = (id, newLabel) => {

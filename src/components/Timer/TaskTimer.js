@@ -38,7 +38,7 @@ function TaskTimer({ elapsedMinutes, elapsedSeconds, id, updateTimer }) {
   }, [minute, second])
 
   const startPauseTimer = () => {
-    setTimerIsActive(!timerIsActive)
+    setTimerIsActive((PrevTimerIsActive) => !PrevTimerIsActive)
   }
 
   return (
